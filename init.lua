@@ -120,6 +120,7 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 -- TODO: Add Auto pair
+-- TODO: Add undo tree
 -- TODO: Add an integrated terminal
 -- TODO: Add something for git
 --
