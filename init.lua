@@ -121,7 +121,6 @@ vim.opt.rtp:prepend(lazypath)
 
 -- TODO: Add undo tree
 -- TODO: Add an integrated terminal
--- TODO: Add something for git
 --
 -- [[ Configure and install plugins ]]
 --
@@ -854,14 +853,7 @@ require('lazy').setup({
     config = true,
   },
   { -- Git integration
-    'NeogitOrg/neogit',
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- required
-      'sindrets/diffview.nvim', -- optional - Diff integration
-
-      'nvim-telescope/telescope.nvim', -- optional
-    },
-    config = true,
+    'tpope/vim-fugitive',
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
