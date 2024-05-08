@@ -119,7 +119,6 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- TODO: Add Auto pair
 -- TODO: Add undo tree
 -- TODO: Add an integrated terminal
 -- TODO: Add something for git
@@ -584,6 +583,9 @@ require('lazy').setup({
       'MunifTanjim/nui.nvim',
       '3rd/image.nvim', -- Optional image support in preview window: See `# Preview Mode` for more information
     },
+    config = function()
+      vim.keymap.set('n', '<leader>\\', '<cmd>Neotree toggle position=right<cr>')
+    end,
   },
 
   { -- Autoformat
@@ -652,6 +654,7 @@ require('lazy').setup({
         },
       },
       'saadparwaiz1/cmp_luasnip',
+      'windwp/nvim-autopairs',
 
       -- Adds other completion capabilities.
       --  nvim-cmp does not ship with all sources by default. They are split
@@ -731,6 +734,9 @@ require('lazy').setup({
           { name = 'path' },
         },
       }
+
+      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
     end,
   },
 
@@ -756,7 +762,7 @@ require('lazy').setup({
     'EdenEast/nightfox.nvim',
     priority = 1000,
     init = function()
-      vim.cmd.colorscheme 'carbonfox'
+      vim.cmd.colorscheme 'duskfox'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
@@ -805,7 +811,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'scss', 'css', 'typescript' },
+      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'scss', 'css', 'typescript', 'jsdoc', 'json', 'regex' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -833,7 +839,11 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
