@@ -12,6 +12,9 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+-- Fixing comment weirdness
+vim.opt.formatoptions:remove { 'c', 'r', 'o' }
+
 -- Make text wrap not break words
 vim.opt.linebreak = true
 
@@ -564,17 +567,7 @@ require('lazy').setup({
   -- TODO: Add configure Neo-tree
   {
     'nvim-neo-tree/neo-tree.nvim',
-    opts = {
-      window = {
-        position = 'right',
-        mappings = {
-          ['<space>'] = {
-            'toggle_node',
-            nowait = true, -- disable `nowait` if you have existing combos starting with this char that you want to use
-          },
-        },
-      },
-    },
+    opts = {},
     branch = 'v3.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -583,6 +576,20 @@ require('lazy').setup({
       '3rd/image.nvim', -- Optional image support in preview window: See `# Preview Mode` for more information
     },
     config = function()
+      require('neo-tree').setup {
+        filesystem = {
+          hijack_netrw_behavior = 'disabled',--[[ 'open_current', ]]
+        },
+        window = {
+          position = 'right',
+          mappings = {
+            ['<space>'] = {
+              'toggle_node',
+              nowait = true, -- disable `nowait` if you have existing combos starting with this char that you want to use
+            },
+          },
+        },
+      }
       vim.keymap.set('n', '<leader>\\', '<cmd>Neotree toggle position=right<cr>')
     end,
   },
@@ -739,24 +746,6 @@ require('lazy').setup({
     end,
   },
 
-  -- { -- You can easily change to a different colorscheme.
-  --   -- Change the name of the colorscheme plugin below, and then
-  --   -- change the command in the config to whatever the name of that colorscheme is.
-  --   --
-  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  --   'folke/tokyonight.nvim',
-  --   priority = 1000, -- Make sure to load this before all the other start plugins.
-  --   init = function()
-  --     -- Load the colorscheme here.
-  --     -- Like many other themes, this one has different styles, and you could load
-  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme 'tokyonight-night'
-  --
-  --     -- You can configure highlights by doing something like:
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-
   {
     'EdenEast/nightfox.nvim',
     priority = 1000,
@@ -827,9 +816,9 @@ require('lazy').setup({
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { 'ruby', 'typescript' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'typescript' } },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
