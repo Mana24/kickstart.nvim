@@ -98,6 +98,9 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('t', '<C-h>', function()
+  vim.cmd 'wincmd h'
+end)
 
 -- Semicolon at the end of the line
 vim.keymap.set('n', '<leader>;', 'A;<esc>', { desc = 'Add a Semicolon[;] to the end of the line' })
@@ -141,7 +144,6 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 -- TODO: Add undo tree
--- TODO: Add an integrated terminal
 --
 -- [[ Configure and install plugins ]]
 --
@@ -879,6 +881,23 @@ require('lazy').setup({
       vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
     end,
   },
+  { -- Integrated terminal
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    opts = {
+      size = function(term)
+        if term.direction == 'horizontal' then
+          return 15
+        elseif term.direction == 'vertical' then
+          return vim.o.columns * 0.4
+        end
+      end,
+      open_mapping = '<c-\\>',
+      shell = 'pwsh',
+      direction = 'vertical',
+    },
+  },
+
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
