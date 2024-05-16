@@ -143,7 +143,6 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- TODO: Add undo tree
 --
 -- [[ Configure and install plugins ]]
 --
@@ -896,6 +895,15 @@ require('lazy').setup({
       shell = 'pwsh',
       direction = 'vertical',
     },
+  },
+  { -- Undotree
+    'mbbill/undotree',
+    config = function()
+      vim.keymap.set('n', '<leader>u', function()
+        vim.cmd 'UndotreeToggle'
+        vim.cmd 'UndotreeFocus'
+      end, { desc = '[U]ndo tree' })
+    end,
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
