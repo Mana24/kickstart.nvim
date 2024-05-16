@@ -590,36 +590,6 @@ require('lazy').setup({
     end,
   },
 
-  -- TODO: Add configure Neo-tree
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    opts = {},
-    branch = 'v3.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-      'MunifTanjim/nui.nvim',
-      '3rd/image.nvim', -- Optional image support in preview window: See `# Preview Mode` for more information
-    },
-    config = function()
-      require('neo-tree').setup {
-        filesystem = {
-          hijack_netrw_behavior = 'disabled',--[[ 'open_current', ]]
-        },
-        window = {
-          position = 'right',
-          mappings = {
-            ['<space>'] = {
-              'toggle_node',
-              nowait = true, -- disable `nowait` if you have existing combos starting with this char that you want to use
-            },
-          },
-        },
-      }
-      vim.keymap.set('n', '<leader>\\', '<cmd>Neotree toggle position=right<cr>')
-    end,
-  },
-
   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
@@ -772,24 +742,6 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'EdenEast/nightfox.nvim',
-    priority = 1000,
-    opts = {
-      specs = {
-        all = {
-          syntax = {
-            operator = 'yellow.dim',
-          },
-        },
-      },
-    },
-    init = function()
-      vim.cmd.colorscheme 'duskfox'
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -862,56 +814,7 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-  { -- Autopairs
-    'windwp/nvim-autopairs',
-    event = 'InsertEnter',
-    config = true,
-  },
-  { -- Git integration
-    'tpope/vim-fugitive',
-  },
-  { -- Oil file navigation
-    'stevearc/oil.nvim',
-    opts = {},
-    -- Optional dependencies
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    config = function()
-      require('oil').setup()
-      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
-    end,
-  },
-  { -- Integrated terminal
-    'akinsho/toggleterm.nvim',
-    version = '*',
-    opts = {
-      size = function(term)
-        if term.direction == 'horizontal' then
-          return 15
-        elseif term.direction == 'vertical' then
-          return vim.o.columns * 0.4
-        end
-      end,
-      open_mapping = '<c-\\>',
-      shell = 'pwsh',
-      direction = 'vertical',
-    },
-  },
-  { -- Undotree
-    'mbbill/undotree',
-    config = function()
-      vim.keymap.set('n', '<leader>u', function()
-        vim.cmd 'UndotreeToggle'
-        vim.cmd 'UndotreeFocus'
-      end, { desc = '[U]ndo tree' })
-    end,
-  },
-  { -- Rooter
-    'airblade/vim-rooter',
-    config = function()
-      vim.g.rooter_manual_only = 1
-      vim.keymap.set('n', '<leader>cw', '<cmd>Rooter<CR>', { desc = '[C]hange [W]orking directory to Rooter' })
-    end,
-  },
+
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -924,7 +827,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -933,7 +836,7 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
