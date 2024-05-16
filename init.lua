@@ -905,7 +905,13 @@ require('lazy').setup({
       end, { desc = '[U]ndo tree' })
     end,
   },
-
+  { -- Rooter
+    'airblade/vim-rooter',
+    config = function()
+      vim.g.rooter_manual_only = 1
+      vim.keymap.set('n', '<leader>cw', '<cmd>Rooter<CR>', { desc = '[C]hange [W]orking directory to Rooter' })
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
