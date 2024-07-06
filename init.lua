@@ -168,8 +168,32 @@ require('lazy').setup({
   --  This is equivalent to:
   --    require('Comment').setup({})
 
+  {
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    config = function()
+      require('ts_context_commentstring').setup {
+        enable_autocmd = false,
+      }
+      local get_option = vim.filetype.get_option
+      vim.filetype.get_option = function(filetype, option)
+        return option == 'commentstring' and require('ts_context_commentstring.internal').calculate_commentstring() or get_option(filetype, option)
+      end
+    end,
+    opts = {},
+  },
+
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'numToStr/Comment.nvim',
+    dependencies = {
+      'JoosepAlviste/nvim-ts-context-commentstring',
+    },
+    config = function()
+      require('Comment').setup {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }
+    end,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -343,6 +367,7 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
+      { 'nanotee/sqls.nvim' },
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
@@ -507,8 +532,21 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         tsserver = {},
-        sqlls = {},
-        --
+        sqls = {
+          on_attach = function(client, bufnr)
+            require('sqls').on_attach(client, bufnr)
+          end,
+          settings = {
+            sqls = {
+              -- UGH, can't get this to work. Giving up for now....
+              connections = {
+                { driver = 'mysql', dataSourceName = 'root:100100@tcp(127.0.0.1:3306)/mysql' },
+              },
+            },
+          },
+        },
+        cssls = {},
+        cssmodules_ls = {},
 
         -- Love me some emmet
         emmet_language_server = {},
@@ -556,6 +594,16 @@ require('lazy').setup({
             require('lspconfig')[server_name].setup(server)
           end,
         },
+      }
+
+      require('lspconfig').cssmodules_ls.setup {
+        init_options = {
+          camelCase = false,
+        },
+        on_attach = function(client)
+          -- avoid accepting `definitionProvider` responses from this LSP
+          client.server_capabilities.definitionProvider = false
+        end,
       }
     end,
   },
@@ -736,6 +784,7 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'buffer' },
+          { name = 'sql' },
         },
       }
 
