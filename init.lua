@@ -105,6 +105,11 @@ end)
 -- Semicolon at the end of the line
 vim.keymap.set('n', '<leader>;', 'A;<esc>', { desc = 'Add a Semicolon[;] to the end of the line' })
 
+-- Spellcheck Toggle
+vim.keymap.set('n', '<leader>st', function()
+  vim.opt.spell = not (vim.opt.spell:get())
+end, { desc = '[S]pellcheck [T]oggle' })
+
 -- Auto indent on empty line.
 local empty_indent = function(rhs)
   if vim.bo[vim.api.nvim_get_current_buf()].buftype == 'terminal' then
