@@ -7,6 +7,8 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+vim.cmd "call setcellwidths([str2list('☎️') + [2]])"
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -463,6 +465,7 @@ require('lazy').setup({
           -- Opens a popup that displays documentation about the word under your cursor
           --  See `:help K` for why this keymap.
           map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          map('gH', vim.lsp.buf.hover, 'Hover Documentation')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -536,7 +539,6 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
         sqls = {
           on_attach = function(client, bufnr)
             require('sqls').on_attach(client, bufnr)
@@ -681,6 +683,32 @@ require('lazy').setup({
     },
   },
 
+  {
+    'allaman/emoji.nvim',
+    version = '1.0.0', -- optionally pin to a tag
+    ft = 'markdown', -- adjust to your needs
+    dependencies = {
+      -- util for handling paths
+      'nvim-lua/plenary.nvim',
+      -- optional for nvim-cmp integration
+      'hrsh7th/nvim-cmp',
+      -- optional for telescope integration
+      'nvim-telescope/telescope.nvim',
+    },
+    opts = {
+      -- default is false, also needed for blink.cmp integration!
+      enable_cmp_integration = true,
+      -- optional if your plugin installation directory
+      -- is not vim.fn.stdpath("data") .. "/lazy/
+      plugin_path = vim.fn.expand '$HOME/plugins/',
+    },
+    config = function(_, opts)
+      require('emoji').setup(opts)
+      -- optional for telescope integration
+      local ts = require('telescope').load_extension 'emoji'
+      vim.keymap.set('n', '<leader>se', ts.emoji, { desc = '[S]earch [E]moji' })
+    end,
+  },
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -717,6 +745,8 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-emoji',
+      'hrsh7th/cmp-buffer',
     },
     config = function()
       -- See `:help cmp`
@@ -790,6 +820,7 @@ require('lazy').setup({
           { name = 'path' },
           { name = 'buffer' },
           { name = 'sql' },
+          { name = 'emoji' },
         },
       }
 
@@ -799,7 +830,7 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -887,7 +918,6 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -911,6 +941,9 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
 }, {
+  rocks = {
+    hererocks = true,
+  },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
